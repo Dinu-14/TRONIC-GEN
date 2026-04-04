@@ -6,8 +6,12 @@ on:
 jobs:
   regen:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install Node
         uses: actions/setup-node@v4
         with:
@@ -22,7 +26,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add package-lock.json
-          git commit -m "Regenerate package-lock.json on Linux" || echo "no changes"
-          git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git commit -m "Regenerate package-lock.json on Linux" || exit 0
+          git push
